@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/eleccionesPersonero/static/css/main.d5c611a6.css",
-    "main.js": "/eleccionesPersonero/static/js/main.33503c26.js",
+    "main.js": "/eleccionesPersonero/static/js/main.d698c6cf.js",
     "static/js/453.0aadf7a1.chunk.js": "/eleccionesPersonero/static/js/453.0aadf7a1.chunk.js",
     "static/media/zahira.webp": "/eleccionesPersonero/static/media/zahira.78328cedae02f742c42a.webp",
     "static/media/sara.webp": "/eleccionesPersonero/static/media/sara.9bbe76b086dc5d55275a.webp",
@@ -48,11 +48,11 @@
     "static/media/Plein-Light.woff2": "/eleccionesPersonero/static/media/Plein-Light.70b4edca1f49e93deeb2.woff2",
     "index.html": "/eleccionesPersonero/index.html",
     "main.d5c611a6.css.map": "/eleccionesPersonero/static/css/main.d5c611a6.css.map",
-    "main.33503c26.js.map": "/eleccionesPersonero/static/js/main.33503c26.js.map",
+    "main.d698c6cf.js.map": "/eleccionesPersonero/static/js/main.d698c6cf.js.map",
     "453.0aadf7a1.chunk.js.map": "/eleccionesPersonero/static/js/453.0aadf7a1.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d5c611a6.css",
-    "static/js/main.33503c26.js"
+    "static/js/main.d698c6cf.js"
   ]
 }
