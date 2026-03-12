@@ -1,0 +1,12 @@
+.banner_div_nombre{
+    width: 100vw;
+    display: flex;
+    justify-content: left;
+}
+
+.banner_nombre{
+    color: black;
+    margin-top: 15px;
+    margin-left: 15px;
+    justify-content: left;
+}
