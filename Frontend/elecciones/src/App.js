@@ -23,6 +23,7 @@ function App() {
             // Al recibir el token del backend, se agrega a sessionStorage
             sessionStorage.setItem("token", data.access_token);
             sessionStorage.setItem("nombre", datos.nombre);
+            sessionStorage.setItem("id_estudiante", datos.id_estudiante);
             navigate("/votar", { replace: true });
           }
 

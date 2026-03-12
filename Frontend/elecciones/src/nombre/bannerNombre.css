@@ -1,7 +1,7 @@
 .banner_div_nombre{
     width: 100vw;
     display: flex;
-    justify-content: left;
+    justify-content: space-around;
 }
 
 .banner_nombre{

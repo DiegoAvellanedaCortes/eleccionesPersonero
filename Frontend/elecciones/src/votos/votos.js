@@ -9,7 +9,7 @@ import zahira from "../img/candidatos/zahira.webp";
 import liceo from "../img/escudo_liceo.webp";
 import { BannerNombre } from '../nombre/bannerNombre';
 import { useEffect, useState } from 'react';
-import { Modal } from 'antd';
+import { Modal, message, Space } from 'antd';
 
 
 const { Meta } = Card;
@@ -72,6 +72,7 @@ const BASE_URL = "http://127.0.0.1:8000";
 function Votos() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [confirmarVotoModal, setconfirmarVotoModal] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -89,26 +90,49 @@ function Votos() {
         setconfirmarVotoModal(true);
     };
 
+    const postDataVoto = async (datosVoto) => {
+        const response = await fetch(BASE_URL + "/votar/" + datosVoto.id_estudiante + "/" + datosVoto.id_candidato, {
+            method: 'POST',
+            mode: "cors",
+            credentials: 'same-origin',
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem("token")}`,
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(datosVoto)
+        });
+        return response
+    }
+    const [eleccion, setEleccion] = useState("0");
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Voto registrado',
+        });
+    };
+
     const handleOkVoto = () => {
-        const fetchData = async (documento) => {
-            try {
-              const estudiante = await fetch(BASE_URL + "/estudiantes/" + documento);
-              const datos = await estudiante.json();
-            } catch (error) {
-              console.log(error)
-            }
-          }
+        const id_estudiante = sessionStorage.getItem("id_estudiante");
+        const datosVoto = {
+            "id_estudiante": id_estudiante,
+            "id_candidato": eleccion,
+        }
+        postDataVoto(datosVoto)
+            .then(response => response.json())
+            .then(data => console.log(data))
         setconfirmarVotoModal(false);
+        success();
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 2000);
     };
 
     const handleCancelVoto = () => {
         setconfirmarVotoModal(false);
     };
-
     console.log(showModal);
     console.log(showModalVoto);
 
-    const [eleccion, setEleccion] = useState("0");
     useEffect(() => {
         // 1. Bloqueo al intentar retroceder
         const handlePopState = (event) => {
@@ -187,6 +211,9 @@ function Votos() {
                     })
                     }
                 </Modal>
+                {contextHolder}
+                <Space>
+                </Space>
                 <button className='btnVotar'
                     onClick={
                         () => {

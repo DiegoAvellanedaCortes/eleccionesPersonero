@@ -1,9 +1,7 @@
-from ast import Try
-
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from sqlalchemy import try_cast
+from sqlalchemy import func
 from Backend.conexion import engine, Base, SessionLocal
 from Backend.models.estudiantes import Estudiantes as EstudiantesModel
 from Backend.models.usuarios import Usuarios as UsuariosModel
@@ -17,6 +15,7 @@ Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://localhost:3000",
+    "http://127.0.0.1:8000"
 ]
 
 app.add_middleware(
@@ -26,15 +25,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
 
 @app.get("/estudiantes")
 def consultar_estudiantes():
@@ -70,16 +60,31 @@ def consultar_candidatos():
 @app.get("/votos")
 def consultar_votos():
     db=SessionLocal()
-    resultado=db.query(VotosModel).all()
-    return JSONResponse(status_code=200, content=jsonable_encoder(resultado))
+    resultado=db.query(VotosModel.id_candidato,EstudiantesModel.nombre.label("nombre_candidato"),func.count(VotosModel.id_estudiante).label("total_votos_candidato")).join(CandidatosModel, VotosModel.id_candidato == CandidatosModel.id_candidato).join(EstudiantesModel, CandidatosModel.id_estudiante == EstudiantesModel.id_estudiante).group_by(VotosModel.id_candidato, EstudiantesModel.nombre).order_by(func.count(VotosModel.id_estudiante).desc()).all()
+
+    resultados_json = []
+
+    for r in resultado:
+        resultados_json.append({
+            "id_candidato": r.id_candidato,
+            "nombre_candidato": r.nombre_candidato,
+            "total_votos_candidato": r.total_votos_candidato
+        })
+
+    return JSONResponse(
+        status_code=200,
+        content=resultados_json
+    )
 
 @app.post("/votar/{id_estudiante}/{id_candidato}")
-def registrarVoto(id_estudiante, id_candidato):
+def registrarVoto(id_estudiante,id_candidato):
     try:
         db=SessionLocal()
         nuevo_voto=VotosModel(id_estudiante=id_estudiante, id_candidato=id_candidato)
         db.add(nuevo_voto)
         db.commit()
-        return db.refresh(nuevo_voto) 
-    except Exception as error:
-        return error
+        return {"status": "success", "message": "Voto registrado correctamente"}
+    except Exception as e: # Esto captura cualquier otro error inesperado
+        db.rollback()
+        print(f"Error inesperado: {e}")
+        return {"status": "error", "message": "Ocurrió un error en el servidor."}

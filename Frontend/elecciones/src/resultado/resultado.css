@@ -1,0 +1,14 @@
+.contenedorTabla{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.tabla{
+    width: 80%;
+    text-align: center;
+}
+
+.tabla tr{
+    text-align: left!important;
+}
